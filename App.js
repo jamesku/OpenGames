@@ -6,6 +6,7 @@ import {
   View
 } from 'react-native';
 import { Row, Col, Grid } from 'react-native-easy-grid';
+const mainScreen = require('./mainScreen.js');
 
 
 export default class App extends Component<{}> {
@@ -20,10 +21,7 @@ state = {
   categories:[],
   dice:0,
   turn:null,
-  category:null,
-  hardquestion:null,
-  easyquestion:null,
-  mediumquestion:null,
+  questionObj:null,
   stage:"initial",
 
 }
@@ -38,15 +36,18 @@ componentDidMount(){
     var diceRoll = Math.floor(Math.random() * (12) ) + 1;
     switch(msg.type){
       case "readyPlayerTurn":
-        this.setState({
-          dice: diceRoll,
-          stage: msg.type,
-          turn:msg.turn,
+        var questionObj = {
           category:msg.category,
           hardquestion:msg.hardquestion,
           easyquestion:msg.easyquestion,
           mediumquestion:msg.mediumquestion,
-        })
+        };
+        this.setState({
+          dice: diceRoll,
+          stage: msg.type,
+          turn:msg.turn,
+          questionObj:questionObj
+        });
         break;
       case "playerSetup":
         this.setState({
@@ -112,9 +113,21 @@ categoryBox = () => {
 }
 
 gameBox = () =>{
-
-return(null)
-
+  switch(this.state.stage){
+    case "initial":
+    return({mainScreen.gameBoard()});
+    break;
+    case "difficultySelection":
+    return({mainScreen.difficultySelection()});
+    case "showTrivia":
+    return({mainScreen.showTrivia()});
+    case "correct":
+    return({mainScreen.correct()});
+    case "wrong":
+    return({mainScreen.wrong()});
+    default:
+    return(null);
+  }
 }
 
   render() {
