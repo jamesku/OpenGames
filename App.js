@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   Platform,
@@ -11,28 +5,145 @@ import {
   Text,
   View
 } from 'react-native';
+import { Row, Col, Grid } from 'react-native-easy-grid';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 export default class App extends Component<{}> {
+
+constructor(){
+  super();
+  this.server = new WebSocket('ws://192.168.1.14:5000');
+}
+
+state = {
+  players:[],
+  categories:[],
+  dice:0,
+  turn:null,
+  category:null,
+  hardquestion:null,
+  easyquestion:null,
+  mediumquestion:null,
+  stage:"initial",
+
+}
+
+componentDidMount(){
+  this.server.onopen= () =>{
+    this.server.send("gameboardconnected");
+  }
+
+  this.server.onmessage = (message) => {
+    var msg = JSON.parse(message.data);
+    var diceRoll = Math.floor(Math.random() * (12) ) + 1;
+    switch(msg.type){
+      case "readyPlayerTurn":
+        this.setState({
+          dice: diceRoll,
+          stage: msg.type,
+          turn:msg.turn,
+          category:msg.category,
+          hardquestion:msg.hardquestion,
+          easyquestion:msg.easyquestion,
+          mediumquestion:msg.mediumquestion,
+        })
+        break;
+      case "playerSetup":
+        this.setState({
+          players: [...this.state.players, msg]
+        });
+        break;
+      case "categorySetup":
+      this.setState({
+        categories: [...this.state.categories, msg.categor]
+      });
+
+
+        default:
+        return(null);
+    }
+  }
+}
+
+
+diceBox = () =>{
+  if (this.state.dice > 0){
+    return(<Text style = {styles.textStyle}>this.state.dice</Text>)
+  } else {
+    return(<Text style = {styles.textStyle}>
+      {Math.floor(Math.random() * (12) ) + 1; }
+      </Text>)
+    }
+  }
+
+playersBox = () => {
+  var playersArr = []
+  for (var i = 0; i < this.state.players.length; i++) {
+   playersArr.push(
+       <Col style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'white',
+          fontSize: 45
+          backgroundColor: this.state.players[i].playercolor
+        }}>
+           {this.state.players[i].playername}
+       </Col>
+     )
+    }
+  return(
+      <Row>
+        {this.playersArr}
+        </Row>
+      )
+}
+
+categoryBox = () => {
+  var categoryArr = []
+  for (var i = 0; i < this.state.categories.length; i++) {
+   categoryArr.push(
+       <Text style={styles.textStyle}>
+       this.state.categories[i];
+       </Text>
+     )
+    }
+  return({this.categoryArr});
+}
+
+gameBox = () =>{
+
+return(null)
+
+}
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
+    <Grid>
+      <Row size={25}>
+        <Col size={25}>
+            {this.diceBox()}
+        </Col>
+        <Col size={75}>
+            {this.playersBox()}
+        </Col>
+      </Row>
+      <Row size={75}>
+        <Col size={25}>
+            {this.categoryBox()}
+        </Col>
+        <Col size={75}>
+            {this.gameBox()}
+        </Col>
+      </Row>
+    </Grid>
+  )
+}
+
+
+
+
+
     );
   }
 }
@@ -42,16 +153,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#606060',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  textStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize:40,
+    color: '#FFFFFF',
   },
 });
