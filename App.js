@@ -67,31 +67,62 @@ componentDidMount(){
         break;
       case "hardQuestion":
         this.setState({
-          questionLevel: 3
+          questionLevel: 3,
+          stage:"showTrivia"
         });
         break;
       case "easyQuestion":
         this.setState({
-          questionLevel: 1
+          questionLevel: 1,
+          stage:"showTrivia"
         });
         break;
       case "mediumQuestion":
         this.setState({
-          questionLevel: 2
+          questionLevel: 2,
+          stage:"showTrivia"
         });
         break;
+      case "A":
+      if (this.state.answer === "A"){
+        this.server.send('{"type":"correctAnswer"}');
+        this.setState(stage:"correct");
+      } else {
+        this.server.send('{"type":"wrongAnswer"}');
+        this.setState(stage:"wrong");
+      }
+      break;
+      case "B":
+      if (this.state.answer === "B"){
+        this.server.send('{"type":"correctAnswer"}');
+        this.setState(stage:"correct");
+      } else {this.server.send('{"type":"wrongAnswer"}');
+    this.setState(stage:"wrong");}
+      break;
+      case "C":
+      if (this.state.answer === "C"){
+        this.server.send('{"type":"correctAnswer"}');
+        this.setState(stage:"correct");
+      } else {this.server.send('{"type":"wrongAnswer"}');this.setState(stage:"wrong");}
+      break;
+      case "D":
+      if (this.state.answer === "D"){
+        this.server.send('{"type":"correctAnswer"}');
+        this.setState(stage:"correct");
+      } else {this.server.send('{"type":"wrongAnswer"}');this.setState(stage:"wrong");}
+      break;
       default:
         return(null);
     }
-  }
+
 
   readyForDifficultySelection = () =>{
     this.server.send('{"type":"readyForDifficultySelection"}');
   }
-  readyForDifficultySelection = () =>{
+  readyForAnAnswer = () =>{
     this.server.send('{"type":"readyForAnswerSelection"}');
   }
-
+}
 window.setInterval(()=>{this.setState(
         {dice:this.generateDiceRoll()}
       )}, 100);
@@ -170,11 +201,12 @@ gameBox = () => {
     return(mainScreen.gameBoard(this.state.players));
     break;
     case "readyPlayerTurn":
-    return(mainScreen.difficultySelection(this.state.diceRoll, this.state.questionObj))
-    this.readyForDifficultySelection();
+    readyForDifficultySelection();
+    return(mainScreen.difficultySelection(this.state.diceRoll, this.state.questionObj));
+    break;
     case "showTrivia":
+    readyForAnAnswer();
     return(mainScreen.showTrivia(this.state.questionObj, this.state.questionLevel, this.setAnswer))
-    this.readyForAnAnswer();
     case "correct":
     return(mainScreen.correct())
     case "wrong":

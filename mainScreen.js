@@ -10,7 +10,7 @@ import {
 var exports = module.exports = {};
 
 
-exports.difficultySelection = (diceRoll, questionObj) => {
+exports.difficultySelection = (diceRoll, questionObj ) => {
   return(
     <Col>
       <Row style = {{backgroundColor:'black'}}></Row>
@@ -55,6 +55,7 @@ exports.showTrivia = (questionObj, selection, setAnswer) => {
     default:
     return(null);
   }
+
   var correctAnswer = question.correct_answer;
   var answerArray = question.incorrect_answers.push(correctAnswer);
 
@@ -72,7 +73,7 @@ exports.showTrivia = (questionObj, selection, setAnswer) => {
 return(
   <Col>
     <Row style = {{backgroundColor:'black'}}></Row>
-    <Row style = {styles.container}}>
+    <Row style = {styles.container}>
       <Text style = {styles.textStyle}>{questionObj.category}</Text>
     </Row>
     <Row style = {{backgroundColor:'black'}}></Row>
@@ -93,16 +94,27 @@ return(
       <Text style = {styles.textStyle}>{answerArray[3]}</Text>
     </Row>
   </Col>
-
 );
 };
 
-exports.correct = (playersArray) => {
-return(null);
-};
+exports.correct = () => {
+return(
+  <Col>
+  <Row style = {styles.container}>
+  <Text style = {{fontSize:200,color:"#000000"}}>Correct!</Text>
+  </Row>
+  </Col>
+  );
+}
 
-exports.wrong = (playersArray) => {
-return(null);
+exports.wrong = () => {
+return(
+  <Col>
+  <Row style = {styles.container}>
+  <Text style = {{fontSize:200,color:"#000000"}}>Wrong!</Text>
+  </Row>
+  </Col>
+);
 };
 
 
@@ -301,6 +313,8 @@ exports.gameBoard = (playersArray) => {
         <Text>END</Text>
       </Row>
       <Row style = {styles.blackContainer}></Row>
+    </Col>
+    <Col style = {styles.blackContainer}>
     </Col>
     </Row>
   )
