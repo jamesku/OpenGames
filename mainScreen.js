@@ -9,8 +9,21 @@ import {
 
 var exports = module.exports = {};
 
+exports.playerName = (playername) => {
+  return(
+  <Col>
+    <Row style = {styles.container}>
+      <Text style = {styles.textStyle}>Your Turn </Text>
+      <Text style = {styles.textStyle}>{playername}</Text>
+    </Row>
+  </Col>
+);
+}
 
-exports.difficultySelection = (diceRoll, questionObj ) => {
+exports.difficultySelection = (diceRoll, questionObj, sendDifficultyReady) => {
+
+  sendDifficultyReady();
+
   return(
     <Col>
       <Row style = {{backgroundColor:'black'}}></Row>
@@ -29,7 +42,7 @@ exports.difficultySelection = (diceRoll, questionObj ) => {
           <Text style = {styles.textStyle}>Easy (A) {Math.floor(diceRoll/3)}</Text>
         </Col>
         <Col style = {styles.container}>
-          <Text style = {styles.textStyle}>Medium (B) {Math.floor(diceRoll/2)}</Text>
+          <Text style = {styles.textStyle}>Medium (B) {Math.floor(diceRoll*2/3+.28)}</Text>
         </Col>
         <Col style = {styles.container}>
           <Text style = {styles.textStyle}>Hard (C) {Math.floor(diceRoll)}</Text>
@@ -44,32 +57,34 @@ exports.showTrivia = (questionObj, selection, setAnswer) => {
   var question;
   switch(selection){
     case 1:
-    question = questionObj.easyquestion
+    question = JSON.parse(JSON.stringify(questionObj.easyquestion))
     break;
     case 2:
-    question = questionObj.mediumquestion
+    question = JSON.parse(JSON.stringify(questionObj.mediumquestion))
     break;
     case 3:
-    question = questionObj.hardquestion
+    question = JSON.parse(JSON.stringify(questionObj.hardquestion))
     break;
     default:
     return(null);
   }
-
+  // var texttest = (JSON.stringify(question));
   var correctAnswer = question.correct_answer;
-  var answerArray = question.incorrect_answers.push(correctAnswer);
-
-  function shuffleArray(array) {
-      for (var i = array.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var temp = array[i];
-          array[i] = array[j];
-          array[j] = temp;
-      }
-  }
-  answerArray=shuffleArray(answerArray);
+  var answerArray = question.incorrect_answers;
+  // answerArray.push(correctAnswer);
+  //
+  // function shuffleArray(array) {
+  //     for (var i = array.length - 1; i > 0; i--) {
+  //         var j = Math.floor(Math.random() * (i + 1));
+  //         var temp = array[i];
+  //         array[i] = array[j];
+  //         array[j] = temp;
+  //     }
+  //     return(array);
+  // }
+  // answerArray=shuffleArray(answerArray);
   setAnswer(answerArray.indexOf(correctAnswer));
-
+  answerArray = JSON.parse(JSON.stringify(answerArray));
 return(
   <Col>
     <Row style = {{backgroundColor:'black'}}></Row>
@@ -77,21 +92,21 @@ return(
       <Text style = {styles.textStyle}>{questionObj.category}</Text>
     </Row>
     <Row style = {{backgroundColor:'black'}}></Row>
-    <Row style = {{backgroundColor:'white'}}>
-      <Text style = {styles.textStyle}>{questionObj.question}</Text>
+    <Row style = {{backgroundColor:'white'}} size={2}>
+      <Text style = {styles.textStyle}>{question.question}</Text>
     </Row>
     <Row style = {{backgroundColor:'black'}}></Row>
-    <Row style = {{backgroundColor:'white'}}>
-      <Text style = {styles.textStyle}>{answerArray[0]}</Text>
+    <Row style = {{backgroundColor:'white', borderWidth:2, borderColor:"#000000"}}>
+      <Text style = {styles.textStyle}>A) {answerArray[0]}</Text>
     </Row>
-    <Row style = {{backgroundColor:'white'}}>
-      <Text style = {styles.textStyle}>{answerArray[1]}</Text>
+    <Row style = {{backgroundColor:'white', borderWidth:2, borderColor:"#000000"}}>
+      <Text style = {styles.textStyle}>B) {answerArray[1]}</Text>
     </Row>
-    <Row style = {{backgroundColor:'white'}}>
-      <Text style = {styles.textStyle}>{answerArray[2]}</Text>
+    <Row style = {{backgroundColor:'white', borderWidth:2, borderColor:"#000000"}}>
+      <Text style = {styles.textStyle}>C) {answerArray[2]}</Text>
     </Row>
-    <Row style = {{backgroundColor:'white'}}>
-      <Text style = {styles.textStyle}>{answerArray[3]}</Text>
+    <Row style = {{backgroundColor:'white', borderWidth:2, borderColor:"#000000"}}>
+      <Text style = {styles.textStyle}>D) {answerArray[3]}</Text>
     </Row>
   </Col>
 );
@@ -183,28 +198,28 @@ exports.gameBoard = (playersArray) => {
     <Col>
       <Row style = {styles.blackContainer}></Row>
       <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 10)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 11)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 12)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 13)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 14)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 15)}
+        {this.playersOnBoard(playersArray , 17)}
       </Row>
       <Row style = {styles.container}>
         {this.playersOnBoard(playersArray , 16)}
       </Row>
       <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 17)}
+        {this.playersOnBoard(playersArray , 15)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 14)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 13)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 12)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 11)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 10)}
       </Row>
       <Row style = {styles.blackContainer}></Row>
     </Col>
@@ -253,28 +268,28 @@ exports.gameBoard = (playersArray) => {
     <Col>
     <Row style = {styles.blackContainer}></Row>
       <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 28)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 29)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 30)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 31)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 32)}
-      </Row>
-      <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 33)}
+        {this.playersOnBoard(playersArray , 35)}
       </Row>
       <Row style = {styles.container}>
         {this.playersOnBoard(playersArray , 34)}
       </Row>
       <Row style = {styles.container}>
-        {this.playersOnBoard(playersArray , 35)}
+        {this.playersOnBoard(playersArray , 33)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 32)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 31)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 30)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 29)}
+      </Row>
+      <Row style = {styles.container}>
+        {this.playersOnBoard(playersArray , 28)}
       </Row>
       <Row style = {styles.blackContainer}></Row>
     </Col>
